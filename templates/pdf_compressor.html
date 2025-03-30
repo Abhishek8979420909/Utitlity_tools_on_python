@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">PDF Compressor</h3>
+                    <a href="{{ url_for('index') }}" class="btn btn-light btn-sm">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Home
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>{{ error }}
+                    </div>
+                    {% endif %}
+                    
+                    <form action="{{ url_for('compress_pdf_route') }}" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="pdf_file" class="form-label">Select PDF File</label>
+                            <input type="file" class="form-control" id="pdf_file" name="pdf_file" accept=".pdf" required>
+                            <div class="form-text">Select a PDF file to compress</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="quality" class="form-label">Compression Quality</label>
+                            <select class="form-select" id="quality" name="quality">
+                                <option value="screen">Screen (72 DPI, lowest quality)</option>
+                                <option value="ebook">Ebook (150 DPI, medium quality)</option>
+                                <option value="printer">Printer (300 DPI, high quality)</option>
+                                <option value="prepress">Prepress (300 DPI, highest quality)</option>
+                            </select>
+                            <div class="form-text">Choose the compression quality level</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="output_name" class="form-label">Output File Name</label>
+                            <input type="text" class="form-control" id="output_name" name="output_name" value="compressed">
+                            <div class="form-text">Enter the name for your compressed PDF file (without .pdf extension)</div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-compress me-2"></i>Compress PDF
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">Duplicate File Remover</h3>
+                    <a href="{{ url_for('index') }}" class="btn btn-light btn-sm">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Home
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>{{ error }}
+                    </div>
+                    {% endif %}
+
+                    {% if message %}
+                    <div class="alert alert-success" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>{{ message }}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Find Duplicates Form -->
+                    <form action="{{ url_for('find_duplicates_route') }}" method="post" class="mb-4">
+                        <div class="mb-3">
+                            <label for="directory" class="form-label">Directory Path</label>
+                            <input type="text" class="form-control" id="directory" name="directory" required>
+                            <div class="form-text">Enter the full path of the directory to scan for duplicates</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="extensions" class="form-label">File Extensions</label>
+                            <input type="text" class="form-control" id="extensions" name="extensions" required>
+                            <div class="form-text">Enter file extensions separated by commas (e.g., jpg, png, pdf)</div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search me-2"></i>Find Duplicates
+                        </button>
+                    </form>
+
+                    <!-- Duplicates List -->
+                    {% if duplicates %}
+                    <div class="mt-4">
+                        <h4>Found Duplicate Files</h4>
+                        <div class="list-group">
+                            {% for hash_value, filepaths in duplicates.items() %}
+                            <div class="list-group-item">
+                                <h5 class="mb-2">Duplicate Group (MD5: {{ hash_value[:8] }}...)</h5>
+                                <ul class="list-unstyled mb-0">
+                                    {% for filepath in filepaths %}
+                                    <li class="mb-2">
+                                        <i class="fas fa-file me-2"></i>{{ filepath }}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Remove Duplicates Form -->
+                        <form action="{{ url_for('remove_duplicates') }}" method="post" class="mt-4">
+                            <input type="hidden" name="directory" value="{{ request.form.get('directory', '') }}">
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Warning: This will remove all duplicate files except the first occurrence in each group.
+                            </div>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-2"></i>Remove Duplicates
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
